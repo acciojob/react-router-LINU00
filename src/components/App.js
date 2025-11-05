@@ -1,13 +1,31 @@
+import React, { useState, useEffect } from "react";
+import Home from "./Home";
+import About from "./About";
+import Navigation from "./Navigation";
 
-import React from "react";
-import './../styles/App.css';
+function App() {
+  const [route, setRoute] = useState(window.location.pathname);
 
-const App = () => {
+  useEffect(() => {
+    const handleLocationChange = () => {
+      setRoute(window.location.pathname);
+    };
+    window.addEventListener("popstate", handleLocationChange);
+    return () => window.removeEventListener("popstate", handleLocationChange);
+  }, []);
+
+  const navigate = (path) => {
+    window.history.pushState({}, "", path);
+    setRoute(path);
+  };
+
   return (
-    <div>
-        {/* Do not remove the main div */}
+    <div className="app">
+      <Navigation onNavigate={navigate} />
+      {route === "/" && <Home />}
+      {route === "/about" && <About />}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
